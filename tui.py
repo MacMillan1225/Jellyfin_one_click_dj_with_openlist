@@ -63,7 +63,6 @@ class FileBrowser(Static):
         self.cur_path: Label
         self.vertical: Vertical
         self.list_view: ListView
-        self.stack = [content_dict]  # 目录栈，记录层级
         self.callback = callback      # 用户最终选择的回调
         self.items = content_dict["content"]
         self.opapi = opapi  # OpenList API 实例
@@ -71,18 +70,20 @@ class FileBrowser(Static):
 
     def compose(self):
         self.list_view = ListView(*[
-            ListItem(Label(self._format_name(item)))
-            for i, item in enumerate(self.items)
+            ListItem()
         ], initial_index=0)
+
         self.cur_path = Label(f"当前路径: {self.current_path}", id="current_path")
         self.vertical = Vertical(
             Label("使用 ↑ ↓ 键选择，→ 进入文件夹，← 返回上级，回车选择"),
             self.list_view,
             self.cur_path
         )
+
         yield self.vertical
 
     def on_mount(self):
+        self._refresh_list()
         self.list_view.focus()
 
     def _format_name(self, item):
@@ -101,16 +102,15 @@ class FileBrowser(Static):
             if cur_item["is_dir"]:
                 self.current_path /=  cur_item["name"]
                 new_content = self._load_dir(self.current_path)
-                self.stack.append(new_content)
                 self.items = new_content["content"]
                 self._refresh_list()
+            else:
+                pass
         elif key == "left":
-            # 返回上级
-            if len(self.stack) > 1:
-                self.current_path = Path(self.current_path).parent
-                self.stack.pop()
-                self.items = self.stack[-1]["content"]
-                self._refresh_list()
+            self.current_path = Path(self.current_path).parent
+            new_content = self._load_dir(self.current_path)
+            self.items = new_content["content"]
+            self._refresh_list()
         elif key == "enter":
             cur_item = str(self.current_path)
             # 返回选择的对象

@@ -1,8 +1,8 @@
 {
-    "dest": "http://127.0.0.1:5244/openlist",
-    "username": "",
-    "password": "",
-    "token": "",
+    "dest": "http://macserver:15244/openlist",
+    "username": "macmillan",
+    "password": "Shibada117hao",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hY21pbGxhbiIsInB3ZF90cyI6MCwiZXhwIjoxNzU1NDMyODk4LCJuYmYiOjE3NTUyNjAwOTgsImlhdCI6MTc1NTI2MDA5OH0.gT2Ze-9qQov2B3TyWNATYOgY53110anG_7uQcv9w1H4",
     "base_dir": "/夸克云盘/来自：分享",
     "dst_dir": "/Jellyfin/Opera"
 }

@@ -45,7 +45,7 @@ def hanzi_to_pinyin_until_symbol(text):
     # A-Za-z         英文字母
     # 0-9            数字
     # _-             合法符号（你可自行增加）
-    pattern = r"^[\u4e00-\u9fffA-Za-z0-9_-]+"
+    pattern = r"^[\u4e00-\u9fffA-Za-z0-9_.-]+"
 
     match = re.match(pattern, text)
     if not match:
