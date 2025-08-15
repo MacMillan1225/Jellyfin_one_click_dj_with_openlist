@@ -1,0 +1,12 @@
+Screen {
+    align: center middle;
+    layers: below above;
+}
+InputDialog {
+    width: 50;
+    height: 6;
+    background: $boost;
+    border: solid green;
+    layer: above;
+    content-align: center middle;
+}

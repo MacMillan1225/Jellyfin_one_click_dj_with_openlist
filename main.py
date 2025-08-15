@@ -125,8 +125,8 @@ async def reset_dir_info():
     """重置 base_dir 和 dst_dir"""
     global config_manager
     logging.info("请设置 base_dir 和 dst_dir")
-    config_manager.set('base_dir', (await tui_input("请输入 base_dir:")).strip())
-    config_manager.set('dst_dir', (await tui_input("请输入 dst_dir:")).strip())
+    config_manager.set('base_dir', (await tui_input("请输入Openlist中视频源目录:", placeholder="/夸克云盘/分享")).strip())
+    config_manager.set('dst_dir', (await tui_input("请输入Openlist中媒体库目录:", placeholder="/Jellyfin/media")).strip())
     config_manager.save()
     logging.info("base_dir 和 dst_dir 配置成功")
     return
@@ -135,8 +135,8 @@ async def reset_auth_info():
     """重置账号密码"""
     global config_manager
     logging.info("请重设用户名和密码")
-    config_manager.set('username', (await tui_input("请输入用户名:")).strip())
-    config_manager.set('password', (await tui_input("请输入密码:")).strip())
+    config_manager.set('username', (await tui_input("请输入Openlist用户名:", placeholder="admin")).strip())
+    config_manager.set('password', (await tui_input("请输入Openlist用户密码:", placeholder="passwd")).strip())
     config_manager.save()
     logging.info("账号密码配置成功")
     return
@@ -145,7 +145,7 @@ async def reset_dest_url():
     """重置目标URL"""
     global config_manager, DEST_URL
     logging.info("请重设目标URL")
-    new_dest = (await tui_input("请输入新的目标URL:")).strip()
+    new_dest = (await tui_input("请输入OpenList访问URL:", placeholder="http://127.0.0.1:5244")).strip()
     config_manager.set('dest', new_dest)
     config_manager.save()
     DEST_URL = new_dest
@@ -188,8 +188,9 @@ async def choose_path(mode="base"):
         path = config_manager.get(f'{mode}_dir')
         dir_info = oplist_api.get_cloud_dir_info(path=path)
         if not dir_info:
-            logging.error(f"获取云端目录信息失败，请重新设置 {mode} 路径")
-            path = await tui_input(f"请输入新的 {mode} 路径:")
+            promot = "源" if mode == "base" else "媒体库"
+            logging.error(f"获取云端目录信息失败，请重新设置 {promot} 路径")
+            path = await tui_input(f"请输入新的 {promot} 路径:")
             config_manager.set(f'{mode}_dir', path)
             config_manager.save()
             continue
@@ -259,7 +260,7 @@ async def auto_rename(path, default_name="TV show", season=1):
     """自动重命名文件"""
     global oplist_api, tui_app
     file_list = oplist_api.get_all_files_from_dir(path)
-    name_prefix = await tui_input(f"请输入重命名前缀:", default_value=default_name)
+    name_prefix = await tui_input(f"请输入剧集名称:", placeholder="TV show", default_value=default_name)
     logging.info("正在处理文件列表...")
     file_rename_list = await form_rename_file_list(file_list, name_prefix, season)
     logging.info("文件列表处理完成，准备重命名...")
@@ -269,8 +270,8 @@ async def auto_rename(path, default_name="TV show", season=1):
 async def auto_fs_structure(path, default_name="TV show"):
     """自动创建文件夹结构"""
     global oplist_api, tui_app
-    show_name = await tui_input("请输入剧集名称:", default_value=default_name)
-    season = await tui_input("请输入季数:", default_value="01")
+    show_name = await tui_input("请输入剧集名称:", placeholder="一起去看流星雨", default_value=default_name)
+    season = await tui_input("请输入季数:", placeholder="01", default_value="01")
     logging.info("正在创建文件夹结构...")
     new_dir_path = str(Path(path) / show_name / f"Season {season.zfill(2)}")
     oplist_api.mkdir(new_dir_path)
